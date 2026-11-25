@@ -4,7 +4,7 @@ import { contractFromJson } from '@prisma/orm-postgres/static';
 
 import contractJson from './contract.json' with { type: 'json' };
 
-export const contract = contractFromJson<Contract>(contractJson);
+export const contract = contractFromJson < Contract > (contractJson);
 
 export const db = postgres({
   contract,
