@@ -1,4 +1,6 @@
 import express from "express";
+import authRoutes from "./routes/auth.routes.js";
+import appointmentRoutes from "./routes/appointment.routes.js";
 
 const app = express();
 
@@ -17,5 +19,9 @@ app.get("/health", (req, res) => {
         timestamps: Date()
     })
 })
+
+//basic app routes 
+app.use("/api/auth", authRoutes);
+app.use("/api/appointments", appointmentRoutes);
 
 export default app;
