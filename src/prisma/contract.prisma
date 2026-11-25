@@ -1,0 +1,39 @@
+// use prisma-8
+
+model User {
+  id        Int                @id @default(autoincrement())
+  email     String             @unique
+  username  String?
+  name      String?
+  appointments  Appointment[]
+  notifications NotificationLog[]
+  createdAt DateTime           @default(now()) @onCreate(now())
+  updatedAt temporal.UpdatedAt
+}
+
+model Appointment {
+  id            Int               @id @default (autoincrement())
+  title         String             
+  description   String?
+  status        String            @default ("SCHEDULED")
+  userId        Int
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications NotificationLog[]
+  createdAt     DateTime          @default(now()) @onCreate(now())
+  updatedAt     temporal.UpdatedAt
+}
+
+model NotificationLog {
+  id            Int          @id @default(autoincrement())
+  type          String       // "CONFIRMATION", "REMINDER", "CANCELLATION"
+  channel       String       @default("EMAIL")
+  recipient     String
+  status        String       @default("PENDING") // "PENDING", "SENT", "FAILED"
+  errorMessage  String?
+  sentAt        DateTime?
+  userId        Int
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointmentId Int?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now()) @onCreate(now())
+}
