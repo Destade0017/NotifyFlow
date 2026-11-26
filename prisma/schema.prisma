@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int               @id @default(autoincrement())
+  email         String            @unique
+  password      String
+  name          String
+  appointments  Appointment[]
+  notifications NotificationLog[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model Appointment {
+  id            Int               @id @default(autoincrement())
+  title         String
+  description   String?
+  scheduledAt   DateTime
+  status        String            @default("SCHEDULED")
+  userId        Int
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications NotificationLog[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model NotificationLog {
+  id            Int          @id @default(autoincrement())
+  type          String       // "CONFIRMATION", "REMINDER", "CANCELLATION"
+  channel       String       @default("EMAIL")
+  recipient     String
+  status        String       @default("PENDING") // "PENDING", "SENT", "FAILED"
+  errorMessage  String?
+  sentAt        DateTime?
+  userId        Int
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointmentId Int?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
+}

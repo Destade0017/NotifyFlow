@@ -13,7 +13,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@prisma/client": "^7.10.1",
+    "@prisma/client": "^6.19.3",
     "@prisma/orm-postgres": "^8.0.0-rc.25",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
@@ -26,6 +26,6 @@
     "@prisma/cli-engine": "^0.10.4",
     "@types/node": "^26.6.10",
     "nodemon": "^3.1.14",
-    "prisma": "^8.0.0-rc.35"
+    "prisma": "^6.19.3"
   }
 }
