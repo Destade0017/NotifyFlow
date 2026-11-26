@@ -1,4 +1,5 @@
 import { db } from "../prisma/db.js";
+import { sendConfirmationEmail } from "../services/mail.service.js";
 
 export const createAppointment = async (req, res) => {
     try {
@@ -20,6 +21,33 @@ export const createAppointment = async (req, res) => {
                 userId,
             }
         })
+
+        const user = await db.user.findUnique({ where: { id: userId }});
+
+        if(!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            })
+        }
+
+        await sendConfirmationEmail({ 
+            to: user.email, 
+            name: user.name, 
+            title: appointment.title, 
+            scheduledAt: appointment.scheduledAt,
+        });
+
+        await db.notificationLog.create({
+            data: {
+                type: "CONFIRMATION", 
+                recipient: req.user.email,
+                status: "SENT",
+                sentAt: new Date(),
+                userId: req.user.userId,
+                appointmentId: appointment.id,
+            }
+        });
 
         return res.status(201).json({
             success: true,
